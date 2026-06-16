@@ -33,7 +33,13 @@ load_dotenv()
 
 app = FastAPI(title="Clippio API", version="11.0.0")
 app.add_middleware(CORSMiddleware,
-    allow_origins=["http://localhost:5173","http://localhost:3000","http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "https://clippio-frontend-t4wb.vercel.app",
+        "https://clippio.vercel.app",
+    ],
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 WORK_DIR     = Path("workdir");  WORK_DIR.mkdir(exist_ok=True)
