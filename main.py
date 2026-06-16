@@ -2,7 +2,7 @@
 Clippio Backend v11 - Stable, minimal, guaranteed to work
 """
 
-import os, sys, json, re, uuid, subprocess, shutil, requests, threading, time, zipfile
+import os, sys, json, re, uuid, subprocess, shutil, requests, threading, time, zipfile, base64
 from pathlib import Path
 from typing import Optional
 from datetime import datetime
@@ -41,6 +41,19 @@ app.add_middleware(CORSMiddleware,
 WORK_DIR     = Path("workdir");  WORK_DIR.mkdir(exist_ok=True)
 OUTPUT_DIR   = Path("outputs");  OUTPUT_DIR.mkdir(exist_ok=True)
 COOKIES_FILE = Path("cookies.txt")
+
+# Load cookies from environment variable if available (for cloud deployment)
+def load_cookies_from_env():
+    cookies_b64 = os.environ.get("COOKIES_BASE64", "")
+    if cookies_b64 and not COOKIES_FILE.exists():
+        try:
+            decoded = base64.b64decode(cookies_b64)
+            COOKIES_FILE.write_bytes(decoded)
+            print(f"Cookies loaded from environment variable ({len(decoded)} bytes)")
+        except Exception as e:
+            print(f"Failed to load cookies from env: {e}")
+
+load_cookies_from_env()
 app.mount("/outputs", StaticFiles(directory="outputs"), name="outputs")
 
 jobs = {}
